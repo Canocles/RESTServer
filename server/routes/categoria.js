@@ -8,7 +8,9 @@ let Categoria = require('../models/categoria');
 
 
 app.get('/categorias', verificarToken, (req, res) => {
-    Categoria.find({}, '_id')
+    Categoria.find({}, 'descripcion usuario')
+        .sort('descripcion')
+        .populate('usuario', 'nombre email')
         .exec((err, categorias) => {
             if (err) {
                 return res.status(400).json({

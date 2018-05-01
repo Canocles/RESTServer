@@ -8,7 +8,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 let urlDB;
 
 // Fecha de expiración del Token
-process.env.TOKEN_EXPIRE = 60 * 60 * 24 * 10;
+process.env.TOKEN_EXPIRE = '48h';
 
 // Secret de autentificación
 process.env.SECRET = process.env.SECRET || 'desarrollo';
