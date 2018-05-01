@@ -14,7 +14,7 @@ process.env.TOKEN_EXPIRE = 60 * 60 * 24 * 10;
 process.env.SECRET = process.env.SECRET || 'desarrollo';
 
 // Client ID google auth
-process.env.CLIENT_ID = process.env.CLIENT_ID || '903230815258-epckmdfe9lihbn7s32dmje21pfn7bpv4.apps.googleusercontent.com'
+process.env.CLIENT_ID = '903230815258-epckmdfe9lihbn7s32dmje21pfn7bpv4.apps.googleusercontent.com'
 
 // Prueba de entorno
 if (process.env.NODE_ENV === 'dev') {
