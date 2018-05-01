@@ -12,7 +12,7 @@ app.get('/usuarios', function(req, res) {
     let hasta = req.query.limite || 5;
     hasta = Number(hasta)
 
-    Usuario.find({}, 'nombre email')
+    Usuario.find({ estado: true }, 'nombre email')
         .skip(desde)
         .limit(hasta)
         .exec((err, usuarios) => {
@@ -23,7 +23,7 @@ app.get('/usuarios', function(req, res) {
                 })
             }
 
-            Usuario.count({}, (err, cont) => {
+            Usuario.count({ estado: true }, (err, cont) => {
                 return res.status(200).json({
                     ok: true,
                     cuantos: cont,
@@ -86,7 +86,11 @@ app.put('/usuarios/:id', function(req, res) {
 app.delete('/usuarios/:id', function(req, res) {
     let id = req.params.id
 
-    Usuario.findByIdAndRemove(id, (err, deleted) => {
+    let cambiarEstado = {
+        estado: false
+    }
+
+    Usuario.findByIdAndUpdate(id, cambiarEstado, { new: true }, (err, deleted) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -108,7 +112,6 @@ app.delete('/usuarios/:id', function(req, res) {
             usuario: deleted
         })
     })
-
 })
 
 module.exports = app
