@@ -1,7 +1,10 @@
-const express = require('express')
-const bcrypt = require('bcrypt')
-const Usuario = require('../models/usuario')
-const app = express()
+const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const Usuario = require('../models/usuario');
+
+const app = express();
 
 app.post('/login', (req, res) => {
 
@@ -33,10 +36,14 @@ app.post('/login', (req, res) => {
             });
         }
 
+        let token = jwt.sign({
+            usuario
+        }, 'este-es-la-prueba-de-secret', { expiresIn: process.env.TOKEN_EXPIRE });
+
         res.status(200).json({
             ok: true,
             usuario,
-            token: '123'
+            token
         });
     });
 });
