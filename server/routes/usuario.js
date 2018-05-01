@@ -18,7 +18,7 @@ app.get('/usuarios', verificarToken, (req, res) => {
         .limit(hasta)
         .exec((err, usuarios) => {
             if (err) {
-                return res.status(400).json({
+                return res.status(500).json({
                     ok: false,
                     err
                 })
@@ -46,7 +46,7 @@ app.post('/usuarios', [verificarToken, verificarRol], function(req, res) {
 
     usuario.save((err, usuarioDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err
             })
@@ -66,9 +66,18 @@ app.put('/usuarios/:id', [verificarToken, verificarRol], function(req, res) {
 
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err
+            })
+        }
+
+        if (!usuarioDB) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Usuario no encontrado'
+                }
             })
         }
 
@@ -88,7 +97,7 @@ app.delete('/usuarios/:id', [verificarToken, verificarRol], function(req, res) {
 
     Usuario.findByIdAndUpdate(id, cambiarEstado, { new: true }, (err, deleted) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err
             })
