@@ -38,7 +38,7 @@ app.post('/login', (req, res) => {
 
         let token = jwt.sign({
             usuario
-        }, 'este-es-la-prueba-de-secret', { expiresIn: process.env.TOKEN_EXPIRE });
+        }, process.env.SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
 
         res.status(200).json({
             ok: true,
