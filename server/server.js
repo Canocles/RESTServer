@@ -8,7 +8,9 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(require('./routes/usuario'))
+
+// Configuración de rutas
+app.use(require('./routes/routes'))
 
 mongoose.connect(process.env.URLDB, (err, res) => {
     if (err) throw err;
