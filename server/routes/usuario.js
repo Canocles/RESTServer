@@ -1,4 +1,5 @@
 const express = require('express')
+const Usuario = require('../models/usuario')
 
 const app = express()
 
@@ -13,16 +14,26 @@ app.get('/usuarios/:id', function(req, res) {
 
 app.post('/usuarios', function(req, res) {
     let body = req.body;
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
+
+    let usuario = new Usuario({
+        nombre: body.nombre,
+        email: body.email,
+        password: body.password,
+        role: body.role
+    })
+
+    usuario.save((err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            })
+        }
+        return res.status(201).json({
+            ok: true,
+            usuario: usuarioDB
         })
-    } else {
-        res.json({
-            usuario: body
-        })
-    }
+    })
 })
 
 app.put('/usuarios/:id', function(req, res) {
@@ -35,4 +46,4 @@ app.delete('/usuarios/:id', function(req, res) {
     res.json(`Delete Usuario ${id}`)
 })
 
-module.exports = app;
+module.exports = app
