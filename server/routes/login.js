@@ -9,11 +9,9 @@ const app = express();
 app.post('/login', (req, res) => {
 
     let body = req.body;
-    console.log(body);
 
     Usuario.findOne({ email: body.email }, (err, usuario) => {
         if (err) {
-            console.log('Error');
             return res.status(500).json({
                 ok: false,
                 err
@@ -21,7 +19,6 @@ app.post('/login', (req, res) => {
         }
 
         if (!usuario) {
-            console.log('Error email');
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -31,7 +28,6 @@ app.post('/login', (req, res) => {
         }
 
         if (!bcrypt.compareSync(body.password, usuario.password)) {
-            console.log('Error pass');
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -43,7 +39,6 @@ app.post('/login', (req, res) => {
         let token = jwt.sign({
             usuario
         }, process.env.SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
-        console.log(token);
         res.status(200).json({
             ok: true,
             usuario,
