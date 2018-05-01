@@ -1,6 +1,6 @@
 const express = require('express')
 const Usuario = require('../models/usuario')
-const { verificarToken } = require('../middlewares/auth')
+const { verificarToken, verificarRol } = require('../middlewares/auth')
 const bcrypt = require('bcrypt')
 const _ = require('underscore')
 
@@ -34,12 +34,7 @@ app.get('/usuarios', verificarToken, (req, res) => {
         })
 })
 
-app.get('/usuarios/:id', function(req, res) {
-    let id = req.params.id;
-    res.json(`Put Usuario ${id}`)
-})
-
-app.post('/usuarios', verificarToken, function(req, res) {
+app.post('/usuarios', [verificarToken, verificarRol], function(req, res) {
     let body = req.body;
 
     let usuario = new Usuario({
@@ -64,7 +59,7 @@ app.post('/usuarios', verificarToken, function(req, res) {
     })
 })
 
-app.put('/usuarios/:id', verificarToken, function(req, res) {
+app.put('/usuarios/:id', [verificarToken, verificarRol], function(req, res) {
     let id = req.params.id
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado'])
 
@@ -84,7 +79,7 @@ app.put('/usuarios/:id', verificarToken, function(req, res) {
     })
 })
 
-app.delete('/usuarios/:id', verificarToken, function(req, res) {
+app.delete('/usuarios/:id', [verificarToken, verificarRol], function(req, res) {
     let id = req.params.id
 
     let cambiarEstado = {

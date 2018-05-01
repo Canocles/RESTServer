@@ -21,6 +21,24 @@ let verificarToken = (req, res, next) => {
     });
 };
 
+// =======================
+// Verificar Rol
+// =======================
+let verificarRol = (req, res, next) => {
+    let usuario = req.usuario;
+
+    if (usuario.role !== 'ADMIN_ROLE') {
+        return res.status(401).json({
+            ok: false,
+            err: {
+                message: 'El usuario no tiene permisos de administrador'
+            }
+        });
+    }
+    next();
+};
+
 module.exports = {
-    verificarToken
+    verificarToken,
+    verificarRol
 }
