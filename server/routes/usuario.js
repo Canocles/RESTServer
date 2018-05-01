@@ -84,8 +84,31 @@ app.put('/usuarios/:id', function(req, res) {
 })
 
 app.delete('/usuarios/:id', function(req, res) {
-    let id = req.params.id;
-    res.json(`Delete Usuario ${id}`)
+    let id = req.params.id
+
+    Usuario.findByIdAndRemove(id, (err, deleted) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            })
+        }
+
+        if (!deleted) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Usuario no encontrado'
+                }
+            })
+        }
+
+        return res.status(200).json({
+            ok: true,
+            usuario: deleted
+        })
+    })
+
 })
 
 module.exports = app
