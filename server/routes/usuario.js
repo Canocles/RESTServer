@@ -12,7 +12,7 @@ app.get('/usuarios', function(req, res) {
     let hasta = req.query.limite || 5;
     hasta = Number(hasta)
 
-    Usuario.find({})
+    Usuario.find({}, 'nombre email')
         .skip(desde)
         .limit(hasta)
         .exec((err, usuarios) => {
@@ -23,9 +23,12 @@ app.get('/usuarios', function(req, res) {
                 })
             }
 
-            return res.status(200).json({
-                ok: true,
-                usuarios
+            Usuario.count({}, (err, cont) => {
+                return res.status(200).json({
+                    ok: true,
+                    cuantos: cont,
+                    usuarios
+                })
             })
         })
 })
