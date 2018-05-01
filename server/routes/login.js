@@ -59,6 +59,7 @@ async function verify(token) {
         // Or, if multiple clients access the backend:
         //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
     });
+
     const payload = ticket.getPayload();
 
     return {
@@ -122,11 +123,11 @@ app.post('/google', async(req, res) => {
                         ok: false,
                         err
                     });
+                } else {
+                    let token = jwt.sign({
+                        usuario
+                    }, process.env.SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
                 }
-
-                let token = jwt.sign({
-                    usuario
-                }, process.env.SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
 
                 return res.json({
                     ok: true,
