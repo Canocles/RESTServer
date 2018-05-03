@@ -1,8 +1,11 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 
 const Uusario = require('../models/usuario');
+const Producto = require('../models/producto');
 
 app.use(fileUpload());
 
@@ -59,11 +62,86 @@ app.put('/upload/:tipo/:id', (req, res) => {
                 err
             });
 
-        return res.json({
-            ok: true,
-            message: 'Imagen subida correctamente'
-        });
+        // Imagen cargada, ya podemos cambiar la imagen del perfil.
+        if (tipo === 'usuarios') {
+            imagenUsuario(id, res, nombreArchivoCompuesto);
+        } else if (tipo === 'productos') {
+            imagenProducto(id, res, nombreArchivoCompuesto);
+        }
     });
 });
+
+function imagenUsuario(id, res, nombreArchivo) {
+    Uusario.findById(id, (err, usuario) => {
+        if (err) {
+            borrarArchivo(nombreArchivo, 'usuarios');
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!usuario) {
+            borrarArchivo(nombreArchivo, 'usuarios');
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'El usuario no existe'
+                }
+            });
+        }
+
+        borrarArchivo(usuario.img, 'usuarios');
+
+        usuario.img = nombreArchivo;
+        usuario.save((err, saved) => {
+            res.json({
+                ok: true,
+                usuario: saved,
+                img: nombreArchivo
+            });
+        });
+    });
+}
+
+function imagenProducto(id, res, nombreArchivo) {
+    Producto.findById(id, (err, producto) => {
+        if (err) {
+            borrarArchivo(nombreArchivo, 'productos');
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!producto) {
+            borrarArchivo(nombreArchivo, 'productos');
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'El producto no existe'
+                }
+            });
+        }
+
+        borrarArchivo(producto.img, 'productos');
+
+        producto.img = nombreArchivo;
+        producto.save((err, saved) => {
+            res.json({
+                ok: true,
+                producto: saved,
+                img: nombreArchivo
+            });
+        });
+    });
+}
+
+function borrarArchivo(nombreArchivo, tipo) {
+    let pathImg = path.resolve(__dirname, `../../uploads/${tipo}/${nombreArchivo}`);
+    if (fs.existsSync(pathImg)) {
+        fs.unlinkSync(pathImg);
+    }
+}
 
 module.exports = app;
