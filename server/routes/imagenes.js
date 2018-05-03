@@ -2,11 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const { verificarToken } = require('../middlewares/auth');
+const { verificarTokenImg } = require('../middlewares/auth');
 
 const app = express();
 
-app.get('/imagen/:tipo/:img', verificarToken, (req, res) => {
+app.get('/imagen/:tipo/:img', verificarTokenImg, (req, res) => {
     let tipo = req.params.tipo;
     let img = req.params.img;
 
